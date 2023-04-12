@@ -1,7 +1,5 @@
-import { Button } from '../components/button'
-import { Inter } from 'next/font/google'
-
-const inter = Inter({ subsets: ['latin'] })
+import { Button } from "@/components/button"
+import { Title } from "@/components/title"
 
 export default function Home() {
   function redirectPage() {
@@ -10,7 +8,7 @@ export default function Home() {
   return (
     <>
       <Button label='minha playlist' onClick={() => redirectPage()} />
-      <Button label='botao com erro' error onClick={() => redirectPage()} />
+      <Title title='PLAYLIST DA MINHA CIDADE' subTitle='Bem vindo, vamos buscar qual playlist ideal pra sua cidade' />
     </>
   )
 }

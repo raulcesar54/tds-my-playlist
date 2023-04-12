@@ -3,10 +3,11 @@ interface ButtonProps {
     onClick: () => void
     error?: boolean
 }
+import { ButtonStyled } from './style'
 export function Button(props: ButtonProps) {
     return (
         <>
-            <button disabled={props.error} onClick={props.onClick}>{props.label}</button>
+            <ButtonStyled disabled={props.error} onClick={props.onClick}>{props.label}</ButtonStyled>
             {props.error && <small>erro do botao</small>}
         </>
     )
