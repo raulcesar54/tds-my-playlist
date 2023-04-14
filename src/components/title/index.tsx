@@ -4,6 +4,7 @@ interface TitleProps {
     title: string
     subTitle?: string
 }
+
 export function Title(props: TitleProps) {
     return (
         <Container>
