@@ -2,23 +2,12 @@ import { weatherApi } from '@/service/api'
 import { useState } from 'react'
 import { FiSearch } from 'react-icons/fi'
 
-
-export function Search() {
+interface SearchProps {
+    onSearch: (inputValue: string) => void
+}
+export function Search(props: SearchProps) {
     const [inputValue, setInputValue] = useState('')
-    async function getWeatherData() {
-        try {
-            const data = await weatherApi.get(``, {
-                params: {
-                    units: 'metric', q: inputValue
-                }
-            })
-            console.log(data)
-        } catch (error) {
-            alert('Cidade nao existe')
-            setInputValue('')
-        }
-    }
-
+   
     return (
         <div className='
         flex
@@ -45,7 +34,7 @@ export function Search() {
                 px-10
                 '
             />
-            <button disabled={!Boolean(inputValue)} onClick={() => getWeatherData()}>
+            <button disabled={!Boolean(inputValue)} onClick={() => props.onSearch(inputValue)}>
                 <FiSearch className='text-white'/>
             </button>
         </div>
