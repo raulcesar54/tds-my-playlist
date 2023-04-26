@@ -1,20 +1,21 @@
 import { shazamApi, weatherApi } from "@/service/api";
 import { createContext, useContext, useState } from "react";
-import { WeatherApiProps } from "./props";
+import { WeatherApiProps, ShazamApiProps } from "./props";
 
 interface SideMenuProps {
     children: JSX.Element
 }
+interface WetherDataProps {
+    city: string
+    temp: number
+    playlist: {
+        name: string
+        author: string
+        img: string
+    }[]
+}
 interface SideMenuContextProps {
-    data: {
-        city: string
-        temp: string
-        playlist: {
-            name: string
-            author: string
-            img: string
-        }[]
-    },
+    data: WetherDataProps,
     loading: boolean
     getWeatherData: (inputValue: string) => void
 }
@@ -22,8 +23,9 @@ const SideMenuContext = createContext({} as SideMenuContextProps)
 
 export const SideMenuProvider = (props: SideMenuProps) => {
     const [loading, setLoading] = useState(false)
+    const [wheatherData, setWhetherData] = useState<WetherDataProps>({ city: '', temp: 0, playlist: [] })
     async function getShazamPlaylist(playlistType: 'classic' | 'pop' | 'rock') {
-        return await shazamApi.get('/search', {
+        return await shazamApi.get<ShazamApiProps>('/search', {
             params: {
                 term: playlistType
             }
@@ -49,18 +51,48 @@ export const SideMenuProvider = (props: SideMenuProps) => {
                 }
             })
             if (data.data.main.temp < 15) {
-                const data = await methods.classic()
-                console.log({ temp: data.data })
+                const shazamResponse = await methods.classic()
+                setWhetherData({
+                    temp: data.data.main.temp,
+                    city: data.data.name,
+                    playlist: shazamResponse.data.tracks.hits.map(track => {
+                        return {
+                            name: track.track.title,
+                            author: track.track.subtitle,
+                            img: track.track.images.background
+                        }
+                    })
+                })
                 return
             }
             if (data.data.main.temp < 30) {
-                const data = await methods.pop()
-                console.log({ pop: data.data })
+                const shazamResponse = await methods.pop()
+                setWhetherData({
+                    temp: data.data.main.temp,
+                    city: data.data.name,
+                    playlist: shazamResponse.data.tracks.hits.map(track => {
+                        return {
+                            name: track.track.title,
+                            author: track.track.subtitle,
+                            img: track.track.images.background
+                        }
+                    })
+                })
                 return
             }
 
-            const rock = await methods.rock()
-            console.log(rock.data)
+            const shazamResponse = await methods.rock()
+            setWhetherData({
+                temp: data.data.main.temp,
+                city: data.data.name,
+                playlist: shazamResponse.data.tracks.hits.map(track => {
+                    return {
+                        name: track.track.title,
+                        author: track.track.subtitle,
+                        img: track.track.images.background
+                    }
+                })
+            })
         } catch (error) {
             alert('Cidade nao existe')
         } finally {
@@ -72,7 +104,7 @@ export const SideMenuProvider = (props: SideMenuProps) => {
 
     return (
         <SideMenuContext.Provider value={{
-            data: { city: '', temp: '', playlist: [] },
+            data: wheatherData,
             getWeatherData,
             loading,
         }}>
