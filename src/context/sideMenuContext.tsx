@@ -5,9 +5,10 @@ import { WeatherApiProps, ShazamApiProps } from "./props";
 interface SideMenuProps {
     children: JSX.Element
 }
-interface WetherDataProps {
+export interface WetherDataProps {
     city: string
     temp: number
+    date: Date | null
     playlist: {
         name: string
         author: string
@@ -15,15 +16,16 @@ interface WetherDataProps {
     }[]
 }
 interface SideMenuContextProps {
-    data: WetherDataProps,
-    loading: boolean
+    clearWeatherData: () => void
     getWeatherData: (inputValue: string) => void
+    data: WetherDataProps
+    loading: boolean
 }
 const SideMenuContext = createContext({} as SideMenuContextProps)
 
 export const SideMenuProvider = (props: SideMenuProps) => {
     const [loading, setLoading] = useState(false)
-    const [wheatherData, setWhetherData] = useState<WetherDataProps>({ city: '', temp: 0, playlist: [] })
+    const [wheatherData, setWhetherData] = useState<WetherDataProps>({ city: '', date: null, temp: 0, playlist: [] })
     async function getShazamPlaylist(playlistType: 'classic' | 'pop' | 'rock') {
         return await shazamApi.get<ShazamApiProps>('/search', {
             params: {
@@ -55,6 +57,7 @@ export const SideMenuProvider = (props: SideMenuProps) => {
                 setWhetherData({
                     temp: data.data.main.temp,
                     city: data.data.name,
+                    date: new Date(),
                     playlist: shazamResponse.data.tracks.hits.map(track => {
                         return {
                             name: track.track.title,
@@ -70,6 +73,7 @@ export const SideMenuProvider = (props: SideMenuProps) => {
                 setWhetherData({
                     temp: data.data.main.temp,
                     city: data.data.name,
+                    date: new Date(),
                     playlist: shazamResponse.data.tracks.hits.map(track => {
                         return {
                             name: track.track.title,
@@ -85,6 +89,7 @@ export const SideMenuProvider = (props: SideMenuProps) => {
             setWhetherData({
                 temp: data.data.main.temp,
                 city: data.data.name,
+                date: new Date(),
                 playlist: shazamResponse.data.tracks.hits.map(track => {
                     return {
                         name: track.track.title,
@@ -100,12 +105,18 @@ export const SideMenuProvider = (props: SideMenuProps) => {
 
         }
     }
-
+    function clearWeatherData() {
+        const confirm = window.confirm('Tem certeza que deseja limpar a lista ?')
+        if (confirm) {
+            setWhetherData({ city: '', date: null, temp: 0, playlist: [] })
+        }
+    }
 
     return (
         <SideMenuContext.Provider value={{
-            data: wheatherData,
             getWeatherData,
+            clearWeatherData,
+            data: wheatherData,
             loading,
         }}>
             {props.children}
