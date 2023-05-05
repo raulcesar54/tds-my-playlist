@@ -1,9 +1,12 @@
 import { WetherDataProps } from "@/context/sideMenuContext";
 import { Button, Variants } from "../button";
 import { format } from 'date-fns'
+
 interface SideListProps extends WetherDataProps {
     onPress: () => void
+    onSaveList?: () => void
 }
+
 export function SideList(props: SideListProps) {
     return (
         <div className="flex flex-2 flex-col md:ml-auto  bg-primary md:max-w-[557px] p-[54px] px-[44px] md:p-[54px]">
@@ -17,9 +20,11 @@ export function SideList(props: SideListProps) {
                         <p className="text-secondary">{props.city} - <strong>{props.date !== null && format(props.date, 'dd/MM/yyyy')}</strong></p>
                         <h1 className="font-bold text-[40px] mt-[-14px]">{props.temp} º</h1>
                     </div>
-                    <div className="mt-[-14px]">
-                        <Button label='Salvar playlist' onClick={console.log}></Button>
-                    </div>
+                    {props.onSaveList && 
+                        <div className="mt-[-14px]">
+                            <Button label='Salvar playlist' onClick={props.onSaveList}></Button>
+                        </div>
+                    }
                 </div>
                 <div className="flex flex-col gap-6">
                     {

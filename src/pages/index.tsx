@@ -4,13 +4,21 @@ import { SideList } from "@/components/sideList"
 import { Title } from "@/components/title"
 import { useSideMenu } from "@/context/sideMenuContext"
 import Image from "next/image"
+import { useRouter } from "next/router"
+import nookie from 'nookies'
 
 export default function Home() {
   const { data, getWeatherData, loading, clearWeatherData } = useSideMenu()
-  function redirectPage() {
-    alert('ir para outra pagina')
-  }
   const showSideList = Boolean(data.playlist.length)
+  const router = useRouter()
+  function redirectPage() {
+    router.push('/playlists')
+  }
+  function saveListInCookie() {
+    nookie.set(null, 'playlist', JSON.stringify(data))
+    alert('playlist salva com sucesso!')
+  }
+
   return (
     <div className={`
         w-full
@@ -20,15 +28,15 @@ export default function Home() {
         <div className={`${showSideList ? 'hidden md:block md:px-[10px]' : ''} w-full md:max-w-[114px]`}>
           <Button label='minha playlist' onClick={() => redirectPage()} />
         </div>
-        <div className={`${showSideList ? 'hidden md:block md:px-[10px] m-auto' : ' md:px-[80px] lg:px-[150px]'} w-full flex flex-col gap-16 mt-16`}>
+        <div className={`${showSideList ? 'hidden md:block md:px-[10px] m-auto' : 'md:px-[80px] lg:px-[150px]'} w-full flex flex-col gap-16 mt-16`}>
           <Title title='PLAYLIST DA MINHA CIDADE' subTitle='Bem vindo, vamos buscar qual playlist ideal pra sua cidade' />
           <Search onSearch={getWeatherData} loading={loading} />
-          <div className={`${showSideList ? 'md:mt-[-100px]' : 'md:mt-[-160px]'}   mt-[-120px] m-auto pointer-events-none`}>
+          <div className={`${showSideList ? 'md:mt-[-100px]' : 'md:mt-[-160px]'} mt-[-120px] m-auto pointer-events-none`}>
             <Image src='music-figure.svg' alt='imagem de musica' width={579} height={579} />
           </div>
         </div>
       </div>
-      {showSideList && <SideList {...data} onPress={clearWeatherData} />}
+      {showSideList && <SideList onSaveList={saveListInCookie} {...data} onPress={clearWeatherData} />}
     </div>
   )
 }

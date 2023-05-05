@@ -1,5 +1,6 @@
 import { Roboto } from "next/font/google";
-import styled from "styled-components";
+import styled, { css } from "styled-components";
+import { Align } from ".";
 
 const robotoBold = Roboto({ weight: '900', subsets: ['latin'] })
 const robotoNormal = Roboto({ weight: '400', subsets: ['latin'] })
@@ -15,10 +16,19 @@ color: #00000063;
 font-size: 15px;
 font-family: ${robotoNormal.style.fontFamily};
 `
-export const Container = styled.div`
+
+interface ContainerProps {
+    align?: Align
+}
+export const Container = styled.div<ContainerProps>`
     display: flex;
     width: 100%;
     flex-direction: column;
     align-items: center;
     justify-content: center;
+ 
+    ${({ align }) => align && css`
+        align-items: ${align};
+    `}
+    
 `

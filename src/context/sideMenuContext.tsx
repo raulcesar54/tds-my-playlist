@@ -112,7 +112,7 @@ export const SideMenuProvider = (props: SideMenuProps) => {
         }
     }
 
-    return (
+    return (    
         <SideMenuContext.Provider value={{
             getWeatherData,
             clearWeatherData,
