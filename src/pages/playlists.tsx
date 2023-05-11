@@ -26,10 +26,11 @@ const Playlist = (props: PlaylistProps) => {
                 />
             </div>
             <SideList
+                displayInline
                 onPress={console.log}
                 {...props.data}
                 date={new Date(String(props.data.date))}
-                />
+            />
         </div>
     )
 }
