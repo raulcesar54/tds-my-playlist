@@ -15,7 +15,10 @@ export default function Home() {
     router.push('/playlists')
   }
   function saveListInCookie() {
-    nookie.set(null, 'playlist', JSON.stringify(data))
+    const playlistSaved = nookie.get(null, 'playlist').playlist || JSON.stringify([])
+    const dataTreated = JSON.stringify([...JSON.parse(playlistSaved), data])
+    console.log(JSON.parse(dataTreated))
+    nookie.set(null, 'playlist', dataTreated)
     alert('playlist salva com sucesso!')
   }
 

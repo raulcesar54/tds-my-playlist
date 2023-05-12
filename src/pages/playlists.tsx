@@ -6,7 +6,7 @@ import { useRouter } from 'next/router'
 import nookie from 'nookies'
 import { FiChevronLeft } from 'react-icons/fi'
 interface PlaylistProps {
-    data: WetherDataProps
+    data: WetherDataProps[]
 }
 const Playlist = (props: PlaylistProps) => {
     const router = useRouter()
@@ -25,12 +25,17 @@ const Playlist = (props: PlaylistProps) => {
                     subTitle='minhas playlists salvas'
                 />
             </div>
-            <SideList
-                displayInline
-                onPress={console.log}
-                {...props.data}
-                date={new Date(String(props.data.date))}
-            />
+            <div className='flex flex-col gap-2'>
+
+                {props.data.map(playlist => {
+                    return <SideList
+                        displayInline
+                        onPress={console.log}
+                        {...playlist}
+                        date={new Date(String(playlist.date))}
+                    />
+                })}
+            </div>
         </div>
     )
 }
@@ -48,7 +53,7 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
     }
 
     const parseData = JSON.parse(data.playlist)
-
+    console.log(parseData)
     return {
         props: {
             data: parseData
